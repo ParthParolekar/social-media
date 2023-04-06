@@ -1,12 +1,41 @@
 "use client";
 
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
+import { useMutation } from "react-query";
+import toast from "react-hot-toast";
 
 export default function AddPost() {
   const [title, setTitle] = useState<string>("");
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  let toastPostId: string;
+
+  const { mutate } = useMutation(
+    async (title: string) => await axios.post("/api/posts/addPost", { title }),
+    {
+      onError: (error) => {
+        if (error instanceof AxiosError) {
+          toast.error(error?.response?.data.message, { id: toastPostId });
+        }
+        setIsDisabled(false);
+      },
+      onSuccess: (data) => {
+        setTitle("");
+        setIsDisabled(false);
+        toast.success("Post created successfully", { id: toastPostId });
+      },
+    }
+  );
+
+  const formSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    toastPostId = toast.loading("Creating  your post", { id: toastPostId });
+    setIsDisabled(true);
+    mutate(title);
+  };
+
   return (
-    <form className="bg-white my-8 p-8 rounded-md">
+    <form onSubmit={formSubmit} className="bg-white my-8 p-8 rounded-md">
       <div className="flex flex-col my-4">
         <textarea
           name="title"

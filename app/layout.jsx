@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
       <body className={`mx-4 md:mx-48 xl:mx-96 ${roboto.variable} bg-gray-200`}>
         <QueryWrapper>
           <Nav />
+
           {children}
         </QueryWrapper>
       </body>
