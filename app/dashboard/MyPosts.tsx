@@ -2,7 +2,8 @@
 
 import { useQuery } from "react-query";
 import axios from "axios";
-import { AuthPosts } from "../types/authPosts";
+import { AuthPosts } from "../types/AuthPosts";
+import EditPost from "./EditPost";
 
 const fetchAuthPosts = async () => {
   const response = await axios.get("/api/posts/authPosts");
@@ -19,7 +20,16 @@ export default function MyPosts() {
   console.log(data);
   return (
     <div>
-      <h1>Data</h1>
+      {data?.posts?.map((post) => (
+        <EditPost
+          key={post.id}
+          title={post.title}
+          id={post.id}
+          avatar={data.image}
+          name={data.name}
+          comments={post.comments}
+        />
+      ))}
     </div>
   );
 }
